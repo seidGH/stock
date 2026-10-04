@@ -1,0 +1,17 @@
+# Local artifacts & dependencies
+node_modules
+.env
+dist
+build
+*.log
+docker-compose.override.yml
+.git
+# Terraform workspace state files
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# IDE specific
+.vscode/
+.idea/
