@@ -25,20 +25,19 @@ jobs:
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
-      - name: Deploy to EC2 through SSM
+      - name: Deploy frontend to EC2 through SSM
         run: |
           aws ssm send-command \
             --instance-ids i-05aef3c5214d09f42 \
             --document-name "AWS-RunShellScript" \
-            --comment "Deploy Stock application" \
+            --comment "Deploy Stock frontend" \
             --parameters 'commands=[
-              "cd /home/ec2-user/stock",
-              "git pull origin main",
-              "docker compose pull",
-              "docker compose up -d",
-              "docker image prune -f"
+              "set -e",
+              "docker pull seiddk/stock-frontend:latest",
+              "docker rm -f stock-frontend || true",
+              "docker run -d --restart unless-stopped --name stock-frontend -p 80:80 seiddk/stock-frontend:latest",
+              "docker ps --filter name=stock-frontend",
+              "curl -f --retry 5 --retry-delay 2 http://localhost/"
             ]' \
+            --query 'Command.CommandId' \
             --output text
-
-
-
