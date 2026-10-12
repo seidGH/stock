@@ -8,7 +8,7 @@ resource "aws_security_group" "stock" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["196.190.62.195/32"]
+    cidr_blocks = ["196.189.150.186/32"]
   }
 
   ingress {
