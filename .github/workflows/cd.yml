@@ -28,7 +28,7 @@ jobs:
       - name: Deploy frontend to EC2 through SSM
         run: |
           aws ssm send-command \
-            --instance-ids i-05aef3c5214d09f42 \
+            --instance-ids i-0afe29464ab3a499a i-050c4cec91c2dedbb \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Stock frontend" \
             --parameters 'commands=[
