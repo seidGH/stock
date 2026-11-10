@@ -108,4 +108,215 @@
       gap: 0.75rem;
     }
 
-    .repair
+    .repair-item {
+      padding: 0.85rem 1rem;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* Spare Parts Grid Formatting */
+    .parts-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .part-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background-color: var(--bg-dark);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    @media (min-width: 640px) {
+      .part-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .part-label {
+      font-weight: 600;
+      color: var(--text-main);
+      min-width: 180px;
+    }
+
+    .search-group {
+      display: flex;
+      gap: 0.5rem;
+      flex: 1;
+      max-width: 500px;
+    }
+
+    .model-input {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    .model-input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+
+    .btn-search {
+      background-color: var(--accent-blue);
+      color: #000;
+      font-weight: 600;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-search:hover {
+      opacity: 0.9;
+    }
+
+    .price-display {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--accent-emerald);
+      font-family: monospace;
+      min-height: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Seya Advanced Mobile Solution and Parts Sales</h1>
+    </header>
+
+    <!-- SECTION 1: REPAIR SECTION -->
+    <div class="accordion-section" id="repair-section">
+      <div class="accordion-header" onclick="toggleSection('repair-section')">
+        <h2>Repair Section</h2>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="accordion-content">
+        <ul class="repair-list">
+          <li class="repair-item">Main Board Repair</li>
+          <li class="repair-item">Touch Glass Repair</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SECTION 2: SPARE PART INVENTORY & PRICE SECTION -->
+    <div class="accordion-section" id="parts-section">
+      <div class="accordion-header" onclick="toggleSection('parts-section')">
+        <h2>Spare Part Inventory and Price Section</h2>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="accordion-content">
+        <div class="parts-grid">
+
+          <!-- 1. LCD Screen -->
+          <div class="part-row">
+            <span class="part-label">1. LCD Screen</span>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <div class="search-group">
+                <input type="text" id="lcd-model" class="model-input" placeholder="Enter smart phone model (e.g., iPhone 12 Pro Max)" />
+                <button class="btn-search" onclick="checkPrice('lcd')">Check Price</button>
+              </div>
+              <div class="price-display" id="lcd-price-output"></div>
+            </div>
+          </div>
+
+          <!-- 2. Battery -->
+          <div class="part-row">
+            <span class="part-label">2. Battery</span>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <div class="search-group">
+                <input type="text" id="battery-model" class="model-input" placeholder="Enter smart phone model" />
+                <button class="btn-search" onclick="checkPrice('battery')">Check Price</button>
+              </div>
+              <div class="price-display" id="battery-price-output"></div>
+            </div>
+          </div>
+
+          <!-- 3. Housing -->
+          <div class="part-row">
+            <span class="part-label">3. Housing</span>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <div class="search-group">
+                <input type="text" id="housing-model" class="model-input" placeholder="Enter smart phone model" />
+                <button class="btn-search" onclick="checkPrice('housing')">Check Price</button>
+              </div>
+              <div class="price-display" id="housing-price-output"></div>
+            </div>
+          </div>
+
+          <!-- 4. Back Cover -->
+          <div class="part-row">
+            <span class="part-label">4. Back Cover</span>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <div class="search-group">
+                <input type="text" id="backcover-model" class="model-input" placeholder="Enter smart phone model" />
+                <button class="btn-search" onclick="checkPrice('backcover')">Check Price</button>
+              </div>
+              <div class="price-display" id="backcover-price-output"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Toggle Accordions (Dropdown / Collapse Arrow Animation)
+    function toggleSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      section.classList.toggle('active');
+    }
+
+    // Backend Routing Handler (Prepared for /api fetch)
+    async function checkPrice(partCategory) {
+      const inputEl = document.getElementById(`${partCategory}-model`);
+      const outputEl = document.getElementById(`${partCategory}-price-output`);
+      const modelName = inputEl.value.trim();
+
+      if (!modelName) {
+        outputEl.textContent = "Please enter a model name.";
+        outputEl.style.color = "var(--text-muted)";
+        return;
+      }
+
+      outputEl.textContent = `Fetching price for ${modelName}...`;
+      outputEl.style.color = "var(--accent-blue)";
+
+      try {
+        // Next Step: Pointing to Express /api route
+        const response = await fetch(`/api/parts/price?category=${partCategory}&model=${encodeURIComponent(modelName)}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        outputEl.textContent = `Selling Price: ${data.price} ETB`;
+        outputEl.style.color = "var(--accent-emerald)";
+      } catch (err) {
+        // Temporary mock fallback visual display until Express routing is connected
+        outputEl.textContent = `[API Offline] Target route: /api/parts/price?category=${partCategory}&model=${modelName}`;
+        outputEl.style.color = "var(--text-muted)";
+      }
+    }
+  </script>
+</body>
+</html>
